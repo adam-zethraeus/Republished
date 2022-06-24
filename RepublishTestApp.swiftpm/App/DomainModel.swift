@@ -2,6 +2,20 @@ import SwiftUI
 
 final class DomainModel: ObservableObject {
 
+    // A standard ObservableObject. 
+
+    // Updates to `count` makes the object fire a signal that
+    // consumers can listen to to know when to read — and SwiftUI
+    // does this by default.
+    
+    // However, if you nest this in another ObservableObject, there's
+    // no inbuilt functionality to make the outer one fire for updates
+    // in response to this inner one firing.
+    
+    // (An ObservableObject is a reference type, so an @Published field
+    // on the outer object containing this object as an inner one 
+    // isn't actually changing.
+    
     @Published private(set) var count: Int = 0
 
     var isEven: Bool {
