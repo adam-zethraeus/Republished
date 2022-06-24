@@ -4,8 +4,8 @@ import Combine
 
 @propertyWrapper
 public struct Republished<Republishing: ObservableObject> where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
-    
-    
+
+
     private let republished: Republishing
     private var reference = Reference()
     final class Reference {
@@ -16,16 +16,16 @@ public struct Republished<Republishing: ObservableObject> where Republishing.Obj
     public init(wrappedValue republished: Republishing)  {
         self.republished = republished
     }
-    
+
     @MainActor
     public var wrappedValue: Republishing {
         republished
     }
-    
+
     public var projectedValue: Republished<Republishing> {
         self
     }
-    
+
     @MainActor public static subscript<
         Instance: ObservableObject
     >(
@@ -33,7 +33,7 @@ public struct Republished<Republishing: ObservableObject> where Republishing.Obj
         wrapped wrappedKeyPath: KeyPath<Instance, Republishing>,
         storage storageKeyPath: KeyPath<Instance, Republished>
     ) -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-        
+
         let storage = instance[keyPath: storageKeyPath]
         let wrapped = storage.projectedValue.republished
         if storage.projectedValue.reference.cancellable == nil {
@@ -43,7 +43,7 @@ public struct Republished<Republishing: ObservableObject> where Republishing.Obj
                     objectWillChange.send()
                 })
         }
-        
+
         return wrapped
     }
 }
