@@ -2,9 +2,9 @@ import SwiftUI
 
 @MainActor
 final class ViewModel: ObservableObject {
-    
+
     @Republished var model = DomainModel()
-    
+
     var info: String {
         [
             model.isEven ? "even" : nil,
@@ -19,23 +19,23 @@ final class ViewModel: ObservableObject {
             .sorted()
             .joined(separator: ", ")
     }
-    
+
     var countString: String {
         "\(model.count)"
     }
-    
+
     func increment() {
         model.set(count: model.count + 1)
     }
-    
+
     func decrement() {
         model.set(count: model.count - 1)
     }
-    
+
     func rand() {
         model.set(count: Int.random(in: Int.min...Int.max))
     }
-    
+
     func zero() {
         model.set(count: 0)
     }
