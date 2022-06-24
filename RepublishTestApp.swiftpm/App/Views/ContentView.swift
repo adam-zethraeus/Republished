@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
 
+    // Regular direct use of outer ObservableObject
+    
     @StateObject var viewModel: ViewModel
 
     var body: some View {
