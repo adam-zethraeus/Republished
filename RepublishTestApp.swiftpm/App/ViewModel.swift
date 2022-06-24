@@ -3,7 +3,20 @@ import SwiftUI
 @MainActor
 final class ViewModel: ObservableObject {
 
-    @Republished var model = DomainModel()
+    // Here the @Republished property wrapper is used to hold
+    // the nested object *instead* of an @Published property wrapper.
+    // (There are *no* @Published wrappers in this file.)
+    
+    // @Republished listens to the inner ObservableObject's
+    // change notifications and propagates them to the outer one.
+   
+    // SwiftUI views can use properties derived from the inner object
+    // normally — just like how they would use an @Published field.
+    //
+    // This outer object could also provide @Binding surfaces into
+    // the inner object's data.
+    
+    @Republished private var model = DomainModel()
 
     var info: String {
         [
