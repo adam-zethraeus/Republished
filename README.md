@@ -21,4 +21,4 @@ var infoFromInner: String { "\(inner.info)" }
 ```
 
 **Note:** The outer `ObservableObject` will only republish notifications
-of inner `ObservableObjects` that it actually accesses.
+from inner `ObservableObjects` that it actually accesses.
