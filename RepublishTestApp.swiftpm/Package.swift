@@ -33,7 +33,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../Republished")
+        .package(path: "..")
     ],
     targets: [
         .executableTarget(

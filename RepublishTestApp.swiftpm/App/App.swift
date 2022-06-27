@@ -5,7 +5,7 @@ struct RepublishTestApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: ViewModel())
+            ContentView(viewModel: ViewModel(model: DomainModel()))
         }
     }
 }

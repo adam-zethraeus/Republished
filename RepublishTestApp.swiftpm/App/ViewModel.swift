@@ -17,7 +17,11 @@ final class ViewModel: ObservableObject {
     // This outer object could also provide @Binding surfaces into
     // the inner object's data.
     
-    @Republished private var model = DomainModel()
+    @Republished private var model: DomainModel
+
+    init(model: DomainModel) {
+        _model = .init(wrappedValue: model)
+    }
 
     var info: String {
         [

@@ -1,16 +1,35 @@
 import Combine
 
-
+/// @Republished is a proprty wrapper which allows an `ObservableObject` nested
+/// within another `ObservableObject` to notify SwiftUI of changes.
+///
+/// The outer `ObservableObject` should hold the inner one in a var annotated
+/// with this property wrapper.
+///
+/// ```swift
+/// @Republished private var inner: InnerObservableObject
+/// ```
+/// 
+/// The inner `ObservableObject's` `objectWillChange` notifications will be 
+/// re-emitted by the outer `ObservableObject` to provide accessors derived
+/// from the inner.
+///
+/// ```swift
+/// var infoFromInner: String { "\(inner.info)" }
+/// ```
+///
+/// > Note: The outer `ObservableObject` will only republish notifications
+/// > of inner `ObservableObjects` that it actually accesses.
 @propertyWrapper
-public struct Republished<Republishing: ObservableObject> where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
+public struct Republished<Republishing: ObservableObject>
+    where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
 
-
-    private let republished: Republishing
-    private var reference = Reference()
-    final class Reference {
+    private final class CancellableReference {
         var cancellable: AnyCancellable? = nil
     }
 
+    private let republished: Republishing
+    private var reference = CancellableReference()
 
     public init(wrappedValue republished: Republishing)  {
         self.republished = republished
@@ -35,6 +54,7 @@ public struct Republished<Republishing: ObservableObject> where Republishing.Obj
 
         let storage = instance[keyPath: storageKeyPath]
         let wrapped = storage.projectedValue.republished
+
         if storage.projectedValue.reference.cancellable == nil {
             storage.projectedValue.reference.cancellable = wrapped
                 .objectWillChange
