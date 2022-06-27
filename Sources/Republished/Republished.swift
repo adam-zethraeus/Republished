@@ -11,8 +11,8 @@ import Combine
 /// ```
 /// 
 /// The inner `ObservableObject's` `objectWillChange` notifications will be 
-/// re-emitted by the outer `ObservableObject` to provide accessors derived
-/// from the inner.
+/// re-emitted by the outer `ObservableObject` allowing it to provide accessors
+/// derived from the inner one's values.
 ///
 /// ```swift
 /// var infoFromInner: String { "\(inner.info)" }
