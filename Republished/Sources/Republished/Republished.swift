@@ -1,4 +1,3 @@
-import SwiftUI
 import Combine
 
 
@@ -11,8 +10,8 @@ public struct Republished<Republishing: ObservableObject> where Republishing.Obj
     final class Reference {
         var cancellable: AnyCancellable? = nil
     }
-    
-    
+
+
     public init(wrappedValue republished: Republishing)  {
         self.republished = republished
     }

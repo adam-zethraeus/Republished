@@ -32,9 +32,13 @@ let package = Package(
             ]
         )
     ],
+    dependencies: [
+        .package(path: "../Republished")
+    ],
     targets: [
         .executableTarget(
             name: "App",
+            dependencies: ["Republished"],
             path: "App"
         )
     ]
