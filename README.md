@@ -1,7 +1,16 @@
 # Republished
 
-`@Republished` is a proprty wrapper which allows an `ObservableObject` nested
-within another `ObservableObject` to notify SwiftUI of changes.
+The `@Republished` proprty wrapper allows an `ObservableObject` nested
+within another `ObservableObject` to naturally notify SwiftUI of changes.
+
+It was inspired by [@mergesort's](https://github.com/mergesort) [blog post](https://build.ms/2022/06/22/model-view-controller-store/) introducing [`Boutique`](https://github.com/mergesort/Boutique).
+
+## Problem
+Nested `ObservableObjects` don't play well with SwiftUI.
+
+An `ObservableObject` is a reference type, not a value type. This means a field on an outer `ObservableObject` containing an inner `ObservableObject` *doesn't change* when the inner object's one's changes. As such the outer object will not send the `objectWillChange` notification required for SwiftUI to know to rerender views that depend on its data.
+
+Nested `ObservableObjects` are often a sign your data model needs some refactoring — but it can also be a nice way to separate code concerns. [`Boutique`](https://github.com/mergesort/Boutique) provides a data store as a nestable `ObservableObject`. This repo's [Example App](https://github.com/adam-zethraeus/Republished/tree/main/RepublishTestApp.swiftpm) uses nested `ObservableObjects` to separate its 'DomainModel' from its 'ViewModel', showcasing a version of the MVVM pattern that separates view-display logic from business logic (and is a bit closer to its [original form](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)).
 
 ## Usage
 
