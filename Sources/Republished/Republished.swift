@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import SwiftUI
 
 /// @Republished is a proprty wrapper which allows an `ObservableObject` nested
 /// within another `ObservableObject` to notify SwiftUI of changes.
@@ -21,14 +23,14 @@ import Combine
 /// > Note: The outer `ObservableObject` will only republish notifications
 /// > of inner `ObservableObjects` that it actually accesses.
 @propertyWrapper
-public struct Republished<Republishing: ObservableObject>
+public class Republished<Republishing: ObservableObject>
     where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
 
     private final class CancellableReference {
         var cancellable: AnyCancellable? = nil
     }
 
-    private let republished: Republishing
+    private var republished: Republishing
     private var reference = CancellableReference()
 
     public init(wrappedValue republished: Republishing)  {
@@ -40,8 +42,18 @@ public struct Republished<Republishing: ObservableObject>
         republished
     }
 
-    public var projectedValue: Republished<Republishing> {
+    var republishedSelf: Republished<Republishing> {
         self
+    }
+
+    @MainActor
+    public var projectedValue: Binding<Republishing> {
+        Binding {
+            self.republished
+        } set: { newValue in
+            self.republished = newValue
+        }
+
     }
 
     @MainActor public static subscript<
@@ -53,16 +65,19 @@ public struct Republished<Republishing: ObservableObject>
     ) -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
 
         let storage = instance[keyPath: storageKeyPath]
-        let wrapped = storage.projectedValue.republished
+        let wrapped = storage.republishedSelf
 
-        if storage.projectedValue.reference.cancellable == nil {
-            storage.projectedValue.reference.cancellable = wrapped
+
+
+        if storage.republishedSelf.reference.cancellable == nil {
+            storage.republishedSelf.reference.cancellable = wrapped
+                .wrappedValue
                 .objectWillChange
                 .sink(receiveValue: { [objectWillChange = instance.objectWillChange] in
                     objectWillChange.send()
                 })
         }
 
-        return wrapped
+        return wrapped.wrappedValue
     }
 }
