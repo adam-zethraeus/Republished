@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import SwiftUI
 
-/// @Republished is a proprty wrapper which allows an `ObservableObject` nested
+/// @Republished is a property wrapper which allows an `ObservableObject` nested
 /// within another `ObservableObject` to notify SwiftUI of changes.
 ///
 /// The outer `ObservableObject` should hold the inner one in a var annotated
