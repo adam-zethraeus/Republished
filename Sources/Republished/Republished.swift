@@ -11,8 +11,8 @@ import SwiftUI
 /// ```swift
 /// @Republished private var inner: InnerObservableObject
 /// ```
-/// 
-/// The inner `ObservableObject's` `objectWillChange` notifications will be 
+///
+/// The inner `ObservableObject's` `objectWillChange` notifications will be
 /// re-emitted by the outer `ObservableObject` allowing it to provide accessors
 /// derived from the inner one's values.
 ///
@@ -27,19 +27,12 @@ import SwiftUI
 public class Republished<Republishing: ObservableObject>
     where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
 
-    private var republished: Republishing
-    private var cancellable: AnyCancellable?
-
-    public init(wrappedValue republished: Republishing)  {
+    public init(wrappedValue republished: Republishing) {
         self.republished = republished
     }
 
     public var wrappedValue: Republishing {
         republished
-    }
-
-    var republishedSelf: Republished<Republishing> {
-        self
     }
 
     public var projectedValue: Binding<Republishing> {
@@ -48,20 +41,18 @@ public class Republished<Republishing: ObservableObject>
         } set: { newValue in
             self.republished = newValue
         }
-
     }
 
     public static subscript<
         Instance: ObservableObject
     >(
         _enclosingInstance instance: Instance,
-        wrapped wrappedKeyPath: KeyPath<Instance, Republishing>,
+        wrapped _: KeyPath<Instance, Republishing>,
         storage storageKeyPath: KeyPath<Instance, Republished>
-    ) -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-
+    )
+        -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
         let storage = instance[keyPath: storageKeyPath]
         let wrapped = storage.republishedSelf
-
 
         if storage.republishedSelf.cancellable == nil {
             storage.republishedSelf.cancellable = wrapped
@@ -74,4 +65,12 @@ public class Republished<Republishing: ObservableObject>
 
         return wrapped.wrappedValue
     }
+
+    var republishedSelf: Republished<Republishing> {
+        self
+    }
+
+    private var republished: Republishing
+    private var cancellable: AnyCancellable?
+
 }

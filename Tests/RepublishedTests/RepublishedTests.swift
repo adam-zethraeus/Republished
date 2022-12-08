@@ -3,6 +3,8 @@ import SwiftUI
 import XCTest
 @testable import Republished
 
+// MARK: - RepublishedTests
+
 @MainActor
 final class RepublishedTests: XCTestCase {
 
@@ -48,9 +50,13 @@ final class RepublishedTests: XCTestCase {
 
 }
 
+// MARK: - OuterObject
+
 final class OuterObject: ObservableObject {
     @Republished var object = RepublishedObject()
 }
+
+// MARK: - RepublishedObject
 
 final class RepublishedObject: ObservableObject {
     @Published var x = 10

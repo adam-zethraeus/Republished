@@ -1,0 +1,81 @@
+# options
+--swiftversion 5.6
+--self remove # redundantSelf
+--importgrouping testable-bottom # sortedImports
+--commas always # trailingCommas
+--trimwhitespace always # trailingSpace
+--indent 4 #indent
+--ifdef no-indent #indent
+--indentstrings true #indent
+--wraparguments before-first # wrapArguments
+--wrapparameters before-first # wrapArguments
+--wrapcollections before-first # wrapArguments
+--wrapconditions before-first # wrapArguments
+--wrapreturntype if-multiline #wrapArguments
+--closingparen balanced # wrapArguments
+--wraptypealiases before-first # wrapArguments
+--funcattributes prev-line # wrapAttributes
+--typeattributes prev-line # wrapAttributes
+--wrapternary before-operators # wrap
+--structthreshold 20 # organizeDeclarations
+--enumthreshold 20 # organizeDeclarations
+--organizetypes class,struct,enum,extension,actor # organizeDeclarations
+--markcategories false #organizeDeclarations
+--extensionacl on-declarations # extensionAccessControl
+--patternlet inline # hoistPatternLet
+--redundanttype inferred # redundantType
+--typeblanklines preserve # blankLinesAtStartOfScope, blankLinesAtEndOfScope
+--emptybraces no-space # emptyBraces
+--maxwidth 120 # wrap
+
+# rules
+--rules andOperator
+--rules anyObjectProtocol
+--rules blankLinesAtEndOfScope
+--rules blankLinesAtStartOfScope
+--rules blankLinesBetweenScopes
+--rules blockComments
+--rules braces
+--rules consecutiveSpaces
+--rules duplicateImports
+--rules emptyBraces
+--rules enumNamespaces
+--rules extensionAccessControl
+--rules hoistPatternLet
+--rules indent
+--rules markTypes
+--rules organizeDeclarations
+--rules redundantClosure
+--rules redundantFileprivate
+--rules redundantGet
+--rules redundantInit
+--rules redundantLet
+--rules redundantParens
+--rules redundantPattern
+--rules redundantRawValues
+--rules redundantReturn
+--rules redundantSelf
+--rules redundantType
+--rules redundantVoidReturnType
+--rules sortDeclarations
+--rules sortedImports
+--rules spaceAroundBraces
+--rules spaceAroundComments
+--rules spaceAroundParens
+--rules spaceInsideBraces
+--rules spaceInsideBrackets
+--rules spaceInsideComments
+--rules spaceInsideParens
+--rules strongifiedSelf
+--rules todos
+--rules trailingCommas
+--rules trailingSpace
+--rules typeSugar
+--rules unusedArguments
+--rules wrap
+--rules wrapArguments
+--rules wrapAttributes
+--rules wrapConditionalBodies
+--rules wrapEnumCases
+--rules wrapMultilineStatementBraces
+--rules wrapSwitchCases

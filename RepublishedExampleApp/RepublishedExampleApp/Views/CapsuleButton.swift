@@ -5,8 +5,8 @@ struct CapsuleButton: View {
     let bg: (c: CGFloat, m: CGFloat, y: CGFloat, k: CGFloat)
     let fg: CGFloat
     let text: String
-    let action: () -> ()
-    
+    let action: () -> Void
+
     var body: some View {
         Button(text) { action() }
             .padding(16)
