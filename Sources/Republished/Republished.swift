@@ -22,22 +22,18 @@ import SwiftUI
 ///
 /// > Note: The outer `ObservableObject` will only republish notifications
 /// > of inner `ObservableObjects` that it actually accesses.
+@MainActor
 @propertyWrapper
 public class Republished<Republishing: ObservableObject>
     where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
 
-    private final class CancellableReference {
-        var cancellable: AnyCancellable? = nil
-    }
-
     private var republished: Republishing
-    private var reference = CancellableReference()
+    private var cancellable: AnyCancellable?
 
     public init(wrappedValue republished: Republishing)  {
         self.republished = republished
     }
 
-    @MainActor
     public var wrappedValue: Republishing {
         republished
     }
@@ -46,7 +42,6 @@ public class Republished<Republishing: ObservableObject>
         self
     }
 
-    @MainActor
     public var projectedValue: Binding<Republishing> {
         Binding {
             self.republished
@@ -56,7 +51,7 @@ public class Republished<Republishing: ObservableObject>
 
     }
 
-    @MainActor public static subscript<
+    public static subscript<
         Instance: ObservableObject
     >(
         _enclosingInstance instance: Instance,
@@ -68,14 +63,13 @@ public class Republished<Republishing: ObservableObject>
         let wrapped = storage.republishedSelf
 
 
-
-        if storage.republishedSelf.reference.cancellable == nil {
-            storage.republishedSelf.reference.cancellable = wrapped
+        if storage.republishedSelf.cancellable == nil {
+            storage.republishedSelf.cancellable = wrapped
                 .wrappedValue
                 .objectWillChange
-                .sink(receiveValue: { [objectWillChange = instance.objectWillChange] in
+                .sink { [objectWillChange = instance.objectWillChange] in
                     objectWillChange.send()
-                })
+                }
         }
 
         return wrapped.wrappedValue

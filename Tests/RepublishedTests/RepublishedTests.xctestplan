@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "CB5190EA-58A0-463D-8037-4E7166E0352C",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "RepublishedTests",
+        "name" : "RepublishedTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -3,6 +3,7 @@ import SwiftUI
 import XCTest
 @testable import Republished
 
+@MainActor
 final class RepublishedTests: XCTestCase {
 
     @ObservedObject var outerObject = OuterObject()
@@ -10,7 +11,6 @@ final class RepublishedTests: XCTestCase {
     var willChangeCount: Int!
     var cancellable: AnyCancellable!
 
-    @MainActor
     override func setUpWithError() throws {
         willChangeCount = 0
         outerObject = OuterObject()
@@ -21,7 +21,6 @@ final class RepublishedTests: XCTestCase {
             }
     }
 
-    @MainActor
     override func tearDownWithError() throws {
         willChangeCount = nil
         object = nil
