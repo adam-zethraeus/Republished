@@ -29,7 +29,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Tests/RepublishedTests/Republished copy.xctestplan"
+            reference = "container:Tests/RepublishedTests/RepublishedTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

@@ -24,7 +24,7 @@ import SwiftUI
 /// > of inner `ObservableObjects` that it actually accesses.
 @MainActor
 @propertyWrapper
-public class Republished<Republishing: ObservableObject>
+public final class Republished<Republishing: ObservableObject>
     where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
 
     public init(wrappedValue republished: Republishing) {
@@ -52,10 +52,9 @@ public class Republished<Republishing: ObservableObject>
     )
         -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
         let storage = instance[keyPath: storageKeyPath]
-        let wrapped = storage.republishedSelf
 
-        if storage.republishedSelf.cancellable == nil {
-            storage.republishedSelf.cancellable = wrapped
+        if storage.cancellable == nil {
+            storage.cancellable = storage
                 .wrappedValue
                 .objectWillChange
                 .sink { [objectWillChange = instance.objectWillChange] in
@@ -63,11 +62,7 @@ public class Republished<Republishing: ObservableObject>
                 }
         }
 
-        return wrapped.wrappedValue
-    }
-
-    var republishedSelf: Republished<Republishing> {
-        self
+        return storage.wrappedValue
     }
 
     private var republished: Republishing

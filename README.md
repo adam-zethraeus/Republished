@@ -37,7 +37,7 @@ from inner `ObservableObjects` that it actually accesses.
 You can use this library via Swift Package Manger by adding a dependency in your Package.swift.
 
 ```swift
-.package(url: "https://github.com/adam-zethraeus/Republished", from: "0.1.0")
+.package(url: "https://github.com/adam-zethraeus/Republished", from: "1.0.1")
 ```
 
 ## Example App
