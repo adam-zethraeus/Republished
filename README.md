@@ -1,4 +1,4 @@
-# Republished
+# Republished ⏩
 
 The `@Republished` proprty wrapper allows an `ObservableObject` nested
 within another `ObservableObject` to naturally notify SwiftUI of changes.
