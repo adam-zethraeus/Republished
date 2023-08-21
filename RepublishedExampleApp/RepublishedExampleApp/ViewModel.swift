@@ -4,61 +4,67 @@ import SwiftUI
 @MainActor
 final class ViewModel: ObservableObject {
 
-    // Here the @Republished property wrapper is used *instead* of
-    // an @Published property wrapper and hold the nested ObservableObject.
-    // (Note that there are no @Published wrappers in this file.)
+  // MARK: Lifecycle
 
-    // @Republished listens to the inner ObservableObject's
-    // change notifications and propagates them to the outer one.
+  init(model: DomainModel) {
+    _model = .init(wrappedValue: model)
+  }
 
-    // SwiftUI views can use properties here derived from the inner object
-    // just as they would use an @Published field.
-    //
-    // This outer object could also provide @Binding surfaces into
-    // the inner object's data.
+  // MARK: Internal
 
-    @Republished private var model: DomainModel
+  var info: String {
+    [
+      model.isEven ? "even" : nil,
+      model.isZero ? "zero" : nil,
+      model.isNegative ? "negative" : nil,
+      model.isPositive ? "positive" : nil,
+      model.isMax ? "MAXINT" : nil,
+      model.isMin ? "MININT" : nil,
+      model.isPrime ? "prime" : nil,
+    ]
+    .compactMap { $0 }
+    .sorted()
+    .joined(separator: ", ")
+  }
 
-    @Republished private var optionalModel: DomainModel? = nil
-    @Republished private var models: [DomainModel] = []
+  var countString: String {
+    "\(model.count)"
+  }
 
-    init(model: DomainModel) {
-        _model = .init(wrappedValue: model)
-    }
+  func increment() {
+    model.set(count: model.count + 1)
+  }
 
-    var info: String {
-        [
-            model.isEven ? "even" : nil,
-            model.isZero ? "zero" : nil,
-            model.isNegative ? "negative" : nil,
-            model.isPositive ? "positive" : nil,
-            model.isMax ? "MAXINT" : nil,
-            model.isMin ? "MININT" : nil,
-            model.isPrime ? "prime" : nil,
-        ]
-        .compactMap { $0 }
-        .sorted()
-        .joined(separator: ", ")
-    }
+  func decrement() {
+    model.set(count: model.count - 1)
+  }
 
-    var countString: String {
-        "\(model.count)"
-    }
+  func rand() {
+    model.set(count: Int.random(in: Int.min ... Int.max))
+  }
 
-    func increment() {
-        model.set(count: model.count + 1)
-    }
+  func zero() {
+    model.set(count: 0)
+  }
 
-    func decrement() {
-        model.set(count: model.count - 1)
-    }
+  // MARK: Private
 
-    func rand() {
-        model.set(count: Int.random(in: Int.min...Int.max))
-    }
+  // Here the @Republished property wrapper is used *instead* of
+  // an @Published property wrapper and hold the nested ObservableObject.
+  // (Note that there are no @Published wrappers in this file.)
 
-    func zero() {
-        model.set(count: 0)
-    }
+  // @Republished listens to the inner ObservableObject's
+  // change notifications and propagates them to the outer one.
+
+  // SwiftUI views can use properties here derived from the inner object
+  // just as they would use an @Published field.
+  //
+  // This outer object could also provide @Binding surfaces into
+  // the inner object's data.
+
+  @Republished private var model: DomainModel
+
+  @Republished private var optionalModel: DomainModel? = nil
+  @Republished private var models: [DomainModel] = []
 
 }

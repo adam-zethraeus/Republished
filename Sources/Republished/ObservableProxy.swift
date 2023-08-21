@@ -1,17 +1,22 @@
 import Combine
 import Foundation
 
+// MARK: - ObservableProxy
+
 protocol ObservableProxy<Storage> {
-  associatedtype ObjectWillChangePublisher: Publisher<(), Never>
+  associatedtype ObjectWillChangePublisher: Publisher<Void, Never>
   associatedtype Storage
   var underlying: Storage { get nonmutating set }
   var objectWillChange: ObjectWillChangePublisher { get }
 }
+
 extension ObservableProxy {
   func erase() -> ErasedProxy<Storage> {
     .init(self)
   }
 }
+
+// MARK: - ErasedProxy
 
 struct ErasedProxy<Storage> {
   init(_ p: some ObservableProxy<Storage>) {
@@ -19,7 +24,8 @@ struct ErasedProxy<Storage> {
     self.getUnderlyingFunc = { p.underlying }
     self.setUnderlyingFunc = { p.underlying = $0 }
   }
-  let objectWillChange: AnyPublisher<(), Never>
+
+  let objectWillChange: AnyPublisher<Void, Never>
   var underlying: Storage {
     get {
       getUnderlyingFunc()

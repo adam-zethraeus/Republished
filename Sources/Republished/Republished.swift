@@ -2,7 +2,6 @@ import Combine
 import Foundation
 import SwiftUI
 
-
 /// @Republished is a property wrapper which allows an `ObservableObject` nested
 /// within another `ObservableObject` to notify SwiftUI of changes.
 ///
@@ -35,50 +34,61 @@ import SwiftUI
 @propertyWrapper
 public final class Republished<Wrapped> {
 
+  // MARK: Lifecycle
+
   public init(wrappedValue: Wrapped) where Wrapped: ObservableObject {
     self.proxy = PassthroughProxy(wrappedValue).erase()
   }
+
   public init<T: ObservableObject>(wrappedValue: T?) where Wrapped == T? {
     self.proxy = OptionalProxy(wrappedValue).erase()
   }
+
   public init<T: ObservableObject>(wrappedValue: [T]) where Wrapped == [T] {
     self.proxy = ArrayProxy(wrappedValue).erase()
   }
 
-  public var wrappedValue: Wrapped {
-      fatalError("Republished can only be used within an ObservableObject")
-  }
+  // MARK: Public
 
+  public var wrappedValue: Wrapped {
+    fatalError("Republished can only be used within an ObservableObject")
+  }
 
   public var projectedValue: Binding<Wrapped> {
-      Binding {
-        self.proxy.underlying
-      } set: { newValue in
-        self.proxy.underlying = newValue
-      }
+    Binding {
+      self.proxy.underlying
+    } set: { newValue in
+      self.proxy.underlying = newValue
+    }
   }
 
-    public static subscript<
-        Instance: ObservableObject
-    >(
-        _enclosingInstance instance: Instance,
-        wrapped _: KeyPath<Instance, Wrapped>,
-        storage storageKeyPath: KeyPath<Instance, Republished>
-    )
-  -> Wrapped where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
-        let storage = instance[keyPath: storageKeyPath]
+  public static subscript<
+    Instance: ObservableObject
+  >(
+    _enclosingInstance instance: Instance,
+    wrapped _: KeyPath<Instance, Wrapped>,
+    storage storageKeyPath: KeyPath<Instance, Republished>
+  )
+    -> Wrapped where Instance.ObjectWillChangePublisher == ObservableObjectPublisher
+  {
+    let storage = instance[keyPath: storageKeyPath]
 
-        if storage.cancellable == nil {
-            storage.cancellable = storage
-              .proxy
-              .objectWillChange
-              .sink { [objectWillChange = instance.objectWillChange] in
-                objectWillChange.send()
-              }
+    if storage.cancellable == nil {
+      storage.cancellable = storage
+        .proxy
+        .objectWillChange
+        // Proxies publish first on subscribe, but that happens in a read — which is during a view
+        // update.
+        .dropFirst()
+        .sink { [objectWillChange = instance.objectWillChange] in
+          objectWillChange.send()
         }
-
-      return storage.proxy.underlying
     }
+
+    return storage.proxy.underlying
+  }
+
+  // MARK: Private
 
   private let proxy: ErasedProxy<Wrapped>
   private var cancellable: AnyCancellable?

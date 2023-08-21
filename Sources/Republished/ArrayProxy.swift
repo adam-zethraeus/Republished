@@ -4,12 +4,16 @@ import SwiftUI
 
 /// Proxy a `objectWillChange` emissions from an array of  `ObservableObject`s.
 struct ArrayProxy<Source: ObservableObject>: ObservableProxy {
-  typealias Storage = [Source]
+
+  // MARK: Lifecycle
+
   init(_ initial: [Source]) {
-    subject = .init(initial)
+    self.subject = .init(initial)
   }
 
-  private let subject: CurrentValueSubject<[Source], Never>
+  // MARK: Internal
+
+  typealias Storage = [Source]
 
   var underlying: [Source] {
     get {
@@ -20,13 +24,15 @@ struct ArrayProxy<Source: ObservableObject>: ObservableProxy {
     }
   }
 
-  var objectWillChange: some Publisher<(), Never> {
+  var objectWillChange: some Publisher<Void, Never> {
     // A publisher emitting based on 2 upstreams...
     Publishers.Merge(
-      // ... one which publishes whenever any one of the underlying objects's objectWillChange publishes.
+      // ... one which publishes whenever any one of the underlying objects's objectWillChange
+      // publishes.
       subject
         .flatMap { allUnderlying in
-          // Make a publisher which emits when any one of the current underlying ObservableObjects's changes.
+          // Make a publisher which emits when any one of the current underlying ObservableObjects's
+          // changes.
           Publishers.MergeMany(
             // Access each of the current ObservableObjects objectWillChange fields.
             allUnderlying
@@ -42,4 +48,9 @@ struct ArrayProxy<Source: ObservableObject>: ObservableProxy {
         .map { _ in () }
     )
   }
+
+  // MARK: Private
+
+  private let subject: CurrentValueSubject<[Source], Never>
+
 }
