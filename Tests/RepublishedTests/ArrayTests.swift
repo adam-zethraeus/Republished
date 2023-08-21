@@ -3,20 +3,20 @@ import SwiftUI
 import XCTest
 @testable import Republished
 
-// MARK: - RepublishedTests
+// MARK: - ArrayTests
 
 @MainActor
-final class RepublishedTests: XCTestCase {
+final class ArrayTests: XCTestCase {
 
-    @ObservedObject var outerObject = OuterObject()
-    var object: RepublishedObject!
-    var willChangeCount: Int!
-    var cancellable: AnyCancellable!
+    @ObservedObject private var outerObject = OuterObject()
+    private var objects: [RepublishedObject]!
+    private var willChangeCount: Int!
+    private var cancellable: AnyCancellable!
 
     override func setUpWithError() throws {
         willChangeCount = 0
         outerObject = OuterObject()
-        object = outerObject.object
+        objects = outerObject.objects
         cancellable = outerObject.objectWillChange
             .sink {
                 self.willChangeCount += 1
@@ -25,26 +25,26 @@ final class RepublishedTests: XCTestCase {
 
     override func tearDownWithError() throws {
         willChangeCount = nil
-        object = nil
+        objects = nil
         cancellable = nil
     }
 
     func test_isRepublishedOnChange() {
         XCTAssertEqual(willChangeCount, 0)
-        object.x = 100
+        objects.first?.x = 1
         XCTAssertEqual(willChangeCount, 1)
     }
 
     func test_isRepublishedOnChange_whenPrivateSet() {
         XCTAssertEqual(willChangeCount, 0)
-        object.setY("goodbye")
+      objects.first?.setY("goodbye")
         XCTAssertEqual(willChangeCount, 1)
     }
 
     func test_isRepublishedOnChange_whenModifiedWithBinding() {
         XCTAssertEqual(willChangeCount, 0)
-        let x = outerObject.$object.x
-        x.wrappedValue = 20
+      let x = outerObject.$objects.first?.x
+        x?.wrappedValue = 20
         XCTAssertEqual(willChangeCount, 1)
     }
 
@@ -52,13 +52,13 @@ final class RepublishedTests: XCTestCase {
 
 // MARK: - OuterObject
 
-final class OuterObject: ObservableObject {
-    @Republished var object = RepublishedObject()
+private final class OuterObject: ObservableObject {
+    @Republished var objects = [RepublishedObject(), RepublishedObject(), RepublishedObject()]
 }
 
 // MARK: - RepublishedObject
 
-final class RepublishedObject: ObservableObject {
+private final class RepublishedObject: ObservableObject {
     @Published var x = 10
     @Published private(set) var y = "Hello"
 

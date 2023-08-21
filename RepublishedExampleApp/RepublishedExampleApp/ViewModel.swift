@@ -19,6 +19,9 @@ final class ViewModel: ObservableObject {
 
     @Republished private var model: DomainModel
 
+    @Republished private var optionalModel: DomainModel? = nil
+    @Republished private var models: [DomainModel] = []
+
     init(model: DomainModel) {
         _model = .init(wrappedValue: model)
     }

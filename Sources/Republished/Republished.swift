@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import SwiftUI
 
+
 /// @Republished is a property wrapper which allows an `ObservableObject` nested
 /// within another `ObservableObject` to notify SwiftUI of changes.
 ///
@@ -20,52 +21,66 @@ import SwiftUI
 /// var infoFromInner: String { "\(inner.info)" }
 /// ```
 ///
-/// > Note: The outer `ObservableObject` will only republish notifications
-/// > of inner `ObservableObjects` that it actually accesses.
+/// You can republish from a single ObservableObject, an optional one, or an array of them.
+///
+/// ```swift
+/// @Republished private var inner: InnerObservableObject
+/// @Republished private var innerOptional: InnerObservableObject?
+/// @Republished private var innerArray: [InnerObservableObject]
+/// ```
+///
+/// > Note: The outer `ObservableObject` will only publish if it is accessed at runtime.
+/// > i.e. An unused `@Republished` field doesn't create any underlying subscriptions.
 @MainActor
 @propertyWrapper
-public final class Republished<Republishing: ObservableObject>
-    where Republishing.ObjectWillChangePublisher == ObservableObjectPublisher {
+public final class Republished<Wrapped> {
 
-    public init(wrappedValue republished: Republishing) {
-        self.republished = republished
-    }
+  public init(wrappedValue: Wrapped) where Wrapped: ObservableObject {
+    self.proxy = PassthroughProxy(wrappedValue).erase()
+  }
+  public init<T: ObservableObject>(wrappedValue: T?) where Wrapped == T? {
+    self.proxy = OptionalProxy(wrappedValue).erase()
+  }
+  public init<T: ObservableObject>(wrappedValue: [T]) where Wrapped == [T] {
+    self.proxy = ArrayProxy(wrappedValue).erase()
+  }
 
-    public var wrappedValue: Republishing {
-        republished
-    }
+  public var wrappedValue: Wrapped {
+      fatalError("Republished can only be used within an ObservableObject")
+  }
 
-    public var projectedValue: Binding<Republishing> {
-        Binding {
-            self.republished
-        } set: { newValue in
-            self.republished = newValue
-        }
-    }
+
+  public var projectedValue: Binding<Wrapped> {
+      Binding {
+        self.proxy.underlying
+      } set: { newValue in
+        self.proxy.underlying = newValue
+      }
+  }
 
     public static subscript<
         Instance: ObservableObject
     >(
         _enclosingInstance instance: Instance,
-        wrapped _: KeyPath<Instance, Republishing>,
+        wrapped _: KeyPath<Instance, Wrapped>,
         storage storageKeyPath: KeyPath<Instance, Republished>
     )
-        -> Republishing where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
+  -> Wrapped where Instance.ObjectWillChangePublisher == ObservableObjectPublisher {
         let storage = instance[keyPath: storageKeyPath]
 
         if storage.cancellable == nil {
             storage.cancellable = storage
-                .wrappedValue
-                .objectWillChange
-                .sink { [objectWillChange = instance.objectWillChange] in
-                    objectWillChange.send()
-                }
+              .proxy
+              .objectWillChange
+              .sink { [objectWillChange = instance.objectWillChange] in
+                objectWillChange.send()
+              }
         }
 
-        return storage.wrappedValue
+      return storage.proxy.underlying
     }
 
-    private var republished: Republishing
-    private var cancellable: AnyCancellable?
+  private let proxy: ErasedProxy<Wrapped>
+  private var cancellable: AnyCancellable?
 
 }
