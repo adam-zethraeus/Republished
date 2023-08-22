@@ -3,7 +3,7 @@
 The `@Republished` proprty wrapper allows an `ObservableObject` nested
 within another `ObservableObject` to naturally notify SwiftUI of changes.
 
-It was inspired by [@mergesort's](https://github.com/mergesort) [blog post](https://build.ms/2022/06/22/model-view-controller-store/) introducing [`Boutique`](https://github.com/mergesort/Boutique).
+It was originally inspired by some of the challenges described in [@mergesort's](https://github.com/mergesort) [blog post](https://build.ms/2022/06/22/model-view-controller-store/) introducing [`Boutique`](https://github.com/mergesort/Boutique).
 
 ## Problem
 Nested `ObservableObjects` don't play well with SwiftUI.
