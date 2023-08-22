@@ -13,7 +13,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    //.package(url: "https://github.com/GoodHatsLLC/SwiftLintFix.git", from: "0.1.7"),
+    // .package(url: "https://github.com/GoodHatsLLC/SwiftLintFix.git", from: "0.1.7"),
   ],
   targets: [
     .target(
