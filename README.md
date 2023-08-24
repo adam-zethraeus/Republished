@@ -65,7 +65,7 @@ can't be affecting a view if it's not read.)
 You can use this library via Swift Package Manger by adding a dependency in your Package.swift.
 
 ```swift
-.package(url: "https://github.com/adam-zethraeus/Republished", from: "1.1.0")
+.package(url: "https://github.com/adam-zethraeus/Republished", from: "1.1.1")
 ```
 
 ## Example App
