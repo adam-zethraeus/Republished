@@ -3,8 +3,6 @@
 The `@Republished` proprty wrapper allows an `ObservableObject` nested
 within another `ObservableObject` to naturally notify SwiftUI of changes.
 
-It was originally inspired by some of the challenges described in [@mergesort's](https://github.com/mergesort) [blog post](https://build.ms/2022/06/22/model-view-controller-store/) introducing [`Boutique`](https://github.com/mergesort/Boutique).
-
 ## Problem
 Nested `ObservableObjects` don't play well with SwiftUI.
 
@@ -28,19 +26,43 @@ re-emitted by the outer `ObservableObject`, allowing it to provide SwiftUI
 compatible accessors derived from the inner.
 
 ```swift
-var infoFromInner: String { "\(inner.info)" }
+final class OuterObservableObject: ObservableObject {
+  /* ... */
+  @Republished private var inner: InnerObservableObject
+  var infoFromInner: String { "\(inner.info)" }
+}
 ```
 
-**Note:** The outer `ObservableObject` will only republish notifications
-from inner `ObservableObjects` that it actually accesses.
+### Additional API Information
 
-## SPM
+You can also use `@Republished` with an optional `ObservableObject` or an
+array of `ObservableObjects`.  
+(Note that regular `@StateObject` and `@ObservedObject` do not allow this.)
+
+```swift
+final class OuterObservableObject: ObservableObject {
+  @Republished private var inner: InnerObservableObject
+  @Republished private var optionalInner: InnerObservableObject?
+  @Republished private var innerList: [InnerObservableObject]
+}
+```
+
+### Be aware
+The outer `ObservableObject` will only republish notifications from accessed fields.
+If an inner ObservableObject is never touched it will not be subscribed to.
+
+## Swift Package Manager
 
 You can use this library via Swift Package Manger by adding a dependency in your Package.swift.
 
 ```swift
-.package(url: "https://github.com/adam-zethraeus/Republished", from: "1.0.1")
+.package(url: "https://github.com/adam-zethraeus/Republished", from: "1.1.0")
 ```
 
 ## Example App
-The [`RepublishedTestApp`](https://github.com/adam-zethraeus/Republished/tree/main/RepublishTestApp.swiftpm) contains a simple example of an [inner `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/DomainModel.swift), used by an [outer `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/ViewModel.swift) view model, to provide data for a [regular SwiftUI `View`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/Views/ContentView.swift).
+The [`RepublishedExampleApp`](https://github.com/adam-zethraeus/Republished/tree/main/RepublishedExampleApp) contains simple examples of an [inner `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/DomainModel.swift) domain model, used by an [outer `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/Single/ViewModel.swift) view model, to provide data for a [regular SwiftUI `View`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/Single/ContentView.swift).
+It also has examples of Optional and Array republishing.
+
+## Credits
+
+This library was inspired by some of the challenges described in a [blog post](https://build.ms/2022/06/22/model-view-controller-store/) by [@mergesort's](https://github.com/mergesort) introducing their the data store library [`Boutique`](https://github.com/mergesort/Boutique).
