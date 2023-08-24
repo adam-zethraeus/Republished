@@ -6,11 +6,18 @@ within another `ObservableObject` to naturally notify SwiftUI of changes.
 ## Problem
 Nested `ObservableObjects` don't play well with SwiftUI.
 
-An `ObservableObject` is a reference type, not a value type. This means a field on an outer `ObservableObject` containing an inner `ObservableObject` *doesn't change* when the inner object's one's changes. As such the outer object will not send the `objectWillChange` notification required for SwiftUI to know to rerender views that depend on its data.
+An `ObservableObject` is an identity type, not a value type. This means a field on an outer `ObservableObject` containing an inner `ObservableObject` *doesn't change* when the inner object changes. This means SwiftUI isn't notified of any changes happening and won't update corresponding views.
 
-Nested `ObservableObjects` are often a sign your data model needs some refactoring — but they can also sometimes be a nice way to separate code concerns.
+This package solves this problem.
 
-This repo's [Example App](https://github.com/adam-zethraeus/Republished/tree/main/RepublishTestApp.swiftpm) uses nested `ObservableObjects` to separate its 'DomainModel' from its 'ViewModel', showcasing a version of the MVVM pattern that separates view-display logic from business logic (and is a bit closer to MVVM's [original form](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)).
+### But, consider...
+Nested `ObservableObjects` are often a sign that an app's data model needs some love.  
+If it's just a state your code has 'ended up in', consider doing some refactoring instead of using `@Republished`.
+
+However: used right `@Republished` can make keeping a nice separation of concerns easier.
+
+This repo's example app uses `ObservableObjects` as 'ViewModels' and 'DomainModels' — decoupling business logic from view logic — and also from the *presentation logic* in the ViewModel.  
+It showcases a version of MVVM that allows view-independent business logic modelling — and is a lot closer to MVVM's [original form](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
 ## Usage
 
@@ -47,9 +54,11 @@ final class OuterObservableObject: ObservableObject {
 }
 ```
 
-### Be aware
+### Note
+
 The outer `ObservableObject` will only republish notifications from accessed fields.
-If an inner ObservableObject is never touched it will not be subscribed to.
+If an inner ObservableObject is never touched it will not be subscribed to. (It also
+can't be affecting a view if it's not read.)
 
 ## Swift Package Manager
 
@@ -60,8 +69,9 @@ You can use this library via Swift Package Manger by adding a dependency in your
 ```
 
 ## Example App
-The [`RepublishedExampleApp`](https://github.com/adam-zethraeus/Republished/tree/main/RepublishedExampleApp) contains simple examples of an [inner `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/DomainModel.swift) domain model, used by an [outer `ObservableObject`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/Single/ViewModel.swift) view model, to provide data for a [regular SwiftUI `View`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishTestApp.swiftpm/App/Single/ContentView.swift).
-It also has examples of Optional and Array republishing.
+The [`RepublishedExampleApp`](https://github.com/adam-zethraeus/Republished/tree/main/RepublishedExampleApp/RepublishedExampleApp) contains an example of an inner `ObservableObject` [domain model](https://github.com/adam-zethraeus/Republished/blob/main/RepublishedExampleApp/RepublishedExampleApp/DomainModel.swift), used by an outer `ObservableObject` [view model](https://github.com/adam-zethraeus/Republished/blob/main/RepublishedExampleApp/RepublishedExampleApp/Single/ViewModel.swift) in a [regular SwiftUI `View`](https://github.com/adam-zethraeus/Republished/blob/main/RepublishedExampleApp/RepublishedExampleApp/Single/ContentView.swift).
+
+It also shows how to use `@Republished` with [optionals](https://github.com/adam-zethraeus/Republished/tree/main/RepublishedExampleApp/RepublishedExampleApp/Optional) and [arrays](https://github.com/adam-zethraeus/Republished/tree/main/RepublishedExampleApp/RepublishedExampleApp/Array) of inner observable objects.
 
 ## Credits
 
