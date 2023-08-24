@@ -80,6 +80,9 @@ public final class Republished<Wrapped> {
         // Proxies publish first on subscribe, but that happens in a read — which is during a view
         // update.
         .dropFirst()
+        .handleEvents(receiveCompletion: { _ in
+            storage.cancellable = nil
+        })
         .sink { [objectWillChange = instance.objectWillChange] in
           objectWillChange.send()
         }
