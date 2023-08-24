@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "8f4d2753f0e4778c76d5f05ad16c74f707390531",
+        "version" : "1.2.3"
+      }
+    },
+    {
+      "identity" : "swiftlintfix",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/GoodHatsLLC/SwiftLintFix.git",
+      "state" : {
+        "revision" : "df971eda06ef78e0570a8feb5e03a04c692ef2b2",
+        "version" : "0.1.7"
+      }
+    }
+  ],
+  "version" : 2
+}
