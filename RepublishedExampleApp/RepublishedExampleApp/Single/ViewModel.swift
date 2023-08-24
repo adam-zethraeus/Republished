@@ -64,7 +64,4 @@ final class ViewModel: ObservableObject {
 
   @Republished private var model: DomainModel
 
-  @Republished private var optionalModel: DomainModel? = nil
-  @Republished private var models: [DomainModel] = []
-
 }

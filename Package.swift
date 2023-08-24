@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "Republished",
-  platforms: [.iOS(.v13), .macOS(.v12)],
+  platforms: [.iOS(.v15), .macOS(.v13)],
   products: [
     .library(
       name: "Republished",
@@ -13,7 +13,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    // .package(url: "https://github.com/GoodHatsLLC/SwiftLintFix.git", from: "0.1.7"),
+    //.package(url: "https://github.com/GoodHatsLLC/SwiftLintFix.git", from: "0.1.7"),
   ],
   targets: [
     .target(
