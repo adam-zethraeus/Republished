@@ -38,11 +38,3 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           action: test
-
-      # - name: Build Examples/Demo
-      #   uses: mxcl/xcodebuild@v2
-      #   with:
-      #     platform: ${{ matrix.platform }}
-      #     swift: ~${{ matrix.swift }}
-      #     action: build
-      #     scheme: Demo
