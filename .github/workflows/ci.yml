@@ -16,20 +16,19 @@ concurrency:
 
 jobs:
   macOS:
-    name: ${{ matrix.platform }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
+    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-11
-          - macos-12
-          - macos-13
         platform:
           - iOS
           - macOS
           - tvOS
           - watchOS
+        swift:
+          - 5.8
+          - 5.9
     steps:
       - name: Git Checkout
         uses: actions/checkout@v4
