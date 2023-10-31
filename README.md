@@ -7,7 +7,7 @@ within another `ObservableObject` to naturally notify SwiftUI of changes.
 
 With many patterns with this separation of concerns the developer ends up having to set up manual data bindings between the ViewModel (or Presenter) and the underlying DomainModel (or business logic). 'Reactivity' is hard — and tools used to handle it directly, like RxSwift and Combine, are error prone.
 
-With `@Republished` you can lean into SwiftUI's regular change reponse pipeline and code imperatively — while still keeping your model abstraction layer crisp for your business essential logic.
+With `@Republished` you can lean into SwiftUI's regular change observation pipeline and code imperatively — while still keeping your model abstraction layer crisp for your business essential logic.
 
 ```swift
 struct MyView: View {
