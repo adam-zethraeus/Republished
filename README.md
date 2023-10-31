@@ -102,4 +102,4 @@ It also shows how to use `@Republished` with [optionals](https://github.com/adam
 
 ## Credits
 
-This library was inspired by some of the challenges described in a [blog post](https://build.ms/2022/06/22/model-view-controller-store/) by [@mergesort's](https://github.com/mergesort) introducing their the data store library [`Boutique`](https://github.com/mergesort/Boutique).
+This library was inspired by some of the challenges described in a [blog post](https://build.ms/2022/06/22/model-view-controller-store/) by [@mergesort](https://github.com/mergesort) introducing their the data store library [`Boutique`](https://github.com/mergesort/Boutique).
