@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "**"
+  schedule:
+    - cron: '3 3 * * 2'  # 3:03 AM, every Tuesday
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macOS:
+    name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - iOS
+          - macOS
+          - tvOS
+          - watchOS
+        swift:
+          - 5.8
+          - 5.9
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Test Library
+        uses: mxcl/xcodebuild@v2
+        with:
+          platform: ${{ matrix.platform }}
+          action: test
