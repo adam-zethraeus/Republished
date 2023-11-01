@@ -5,7 +5,8 @@ within another `ObservableObject` to naturally notify SwiftUI of changes.
 
 ## What it achieves
 
-With many patterns with this separation of concerns the developer ends up having to set up manual data bindings between the ViewModel (or Presenter) and the underlying DomainModel (or business logic). 'Reactivity' is hard — and tools used to handle it directly, like RxSwift and Combine, are error prone.
+Some architectural patterns split view logic, from presentation logic, from domain logic. Often with this separation of concerns the developer ends up having to set up manual data bindings between the ViewModel (or Presenter) and the underlying DomainModel (or business logic).
+'Reactivity' is hard — and tools used to handle it directly, like RxSwift and Combine, are error prone.
 
 With `@Republished` you can lean into SwiftUI's regular change observation pipeline and code imperatively — while still keeping your model abstraction layer crisp for your business essential logic.
 
@@ -55,7 +56,7 @@ Use this library via Swift Package Manger by adding a dependency in your Package
 .package(url: "https://github.com/adam-zethraeus/Republished", from: "1.1.1")
 ```
 
-### Implementation
+### Usage
 The outer `ObservableObject` should hold the inner one in a var annotated
 with the `@Republished` property wrapper.
 
